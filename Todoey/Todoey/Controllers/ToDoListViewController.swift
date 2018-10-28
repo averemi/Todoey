@@ -34,7 +34,7 @@ class ToDoListViewController: UITableViewController {
         newItem3.title = "Hug Dog"
         itemArray.append(newItem3)*/ // this is already saved in our own created Plist
         
-     //   loadItems()
+        loadItems()
         
     }
     
@@ -66,6 +66,18 @@ class ToDoListViewController: UITableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
         
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete) {
+            context.delete(itemArray[indexPath.row])
+            itemArray.remove(at: indexPath.row)
+            saveItems()
+        }
     }
     
     // MARK - Add New Items
@@ -115,18 +127,16 @@ class ToDoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    /*
     func loadItems() {
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            }
-            catch {
-                print("Error decoding item array,  \(error)")
-            }
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context \(error)")
         }
-    }*/
+    }
+    
+   
     
 }
 
