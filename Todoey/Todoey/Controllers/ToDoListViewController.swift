@@ -7,15 +7,19 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoListViewController: UITableViewController {
 
     var itemArray = [Item]()
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+       print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         
   /*      let newItem = Item()
@@ -30,7 +34,7 @@ class ToDoListViewController: UITableViewController {
         newItem3.title = "Hug Dog"
         itemArray.append(newItem3)*/ // this is already saved in our own created Plist
         
-        loadItems()
+     //   loadItems()
         
     }
     
@@ -76,8 +80,10 @@ class ToDoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) {
             (alert) in
             if let text = textField.text {
-                let newItem = Item()
+                
+                let newItem = Item(context: self.context)
                 newItem.title = text
+                newItem.done = false
                 self.itemArray.append(newItem)
                 
                 self.saveItems()
@@ -99,18 +105,17 @@ class ToDoListViewController: UITableViewController {
     // MARK - Model Manipulation Methods
     
     func saveItems() {
-        let encoder = PropertyListEncoder()
         
         do {
-            let data = try encoder.encode(itemArray) // encode our data into our own created plist (property list)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print("Error encoding item array \(error)")
+            print("Error saving context \(error)")
         }
         
         tableView.reloadData()
     }
     
+    /*
     func loadItems() {
         if let data = try? Data(contentsOf: dataFilePath!) {
             let decoder = PropertyListDecoder()
@@ -121,7 +126,7 @@ class ToDoListViewController: UITableViewController {
                 print("Error decoding item array,  \(error)")
             }
         }
-    }
+    }*/
     
 }
 
