@@ -11,6 +11,7 @@ import CoreData
 
 class ToDoListViewController: UITableViewController {
 
+    @IBOutlet weak var searchBar: UISearchBar!
     var itemArray = [Item]()
 
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -21,18 +22,6 @@ class ToDoListViewController: UITableViewController {
         
        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
-        
-  /*      let newItem = Item()
-        newItem.title = "Find Mike"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Get Dog"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Hug Dog"
-        itemArray.append(newItem3)*/ // this is already saved in our own created Plist
         
         loadItems()
         
@@ -127,16 +116,47 @@ class ToDoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func loadItems() {
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+        
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("Error fetching data from context \(error)")
         }
+        
+        tableView.reloadData()
     }
     
    
+    
+}
+
+
+// MARK: Seatch Bar Methods
+
+extension ToDoListViewController : UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems(with: request)
+        
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
     
 }
 
