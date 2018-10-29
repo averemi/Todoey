@@ -37,11 +37,6 @@ class CategotyViewController: UITableViewController {
         
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-    }
     
     
     // MARK: Add Button Pressed
@@ -79,6 +74,21 @@ class CategotyViewController: UITableViewController {
     
     // MARK: TableView Delegate Methods
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+      //  tableView.deselectRow(at: indexPath, animated: true)
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+            let destinationVC = segue.destination as! ToDoListViewController
+        
+            if let indexPath = tableView.indexPathForSelectedRow {
+            
+            destinationVC.selectedCategory = categories[indexPath.row]
+        //    destinationVC.delegate = self
+        }
+    }
     
     
     // MARK: Data Manipulation Methods
