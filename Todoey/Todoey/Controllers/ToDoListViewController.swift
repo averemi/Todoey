@@ -16,6 +16,9 @@ class ToDoListViewController: UITableViewController {
 
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    // Encoding items with NSCoder
+    // let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
     var selectedCategory : Category? {
         didSet {
             loadItems()
@@ -111,6 +114,31 @@ class ToDoListViewController: UITableViewController {
     }
     
     // MARK - Model Manipulation Methods
+    
+    // Encoding items with NSCoder
+    /* func saveData() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(self.itemArray)
+            try data.write(to: self.dataFilePath!)
+        } catch {
+            print("Error encoding item array, \(error)")
+        }
+        tableView.reloadData()
+    } */
+    
+    // Decoding data with NSCoder
+    /* func loadData() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding data array")
+            }
+        }
+    } */
     
     func saveItems() {
         
