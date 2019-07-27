@@ -51,7 +51,7 @@ class CategotyViewController: UITableViewController {
                 let newCategory = Category()
                 newCategory.name = text
                 
-                self.saveCategories()
+                self.saveCategories(category: newCategory)
             }
         }
         
